@@ -1,0 +1,11 @@
+---
+import { posts } from '../../lib/ghost';
+---
+
+<ul>
+  {posts.map(post => 
+    <li>
+      <a href={`blog/${post.slug}`}>{post.title}</a>
+    </li>
+  )}
+</ul>

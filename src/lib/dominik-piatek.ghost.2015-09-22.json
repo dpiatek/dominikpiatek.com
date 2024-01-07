@@ -1,0 +1,1238 @@
+{
+  "db": [
+    {
+      "meta": {
+        "exported_on": 1442933678046,
+        "version": "003"
+      },
+      "data": {
+        "posts": [
+          {
+            "id": 2,
+            "uuid": "ecc9e496-083a-4ec7-9aef-999531814040",
+            "title": "Use the declarative nature of AngularJS for fun and profit",
+            "slug": "use-the-declartive-nature-of-angularjs",
+            "markdown": "In one Google talk, Miško Hevery mentions that they wanted Angular to be used by designers. That statement can be dismissed easily. Angular is a complex beast and most people require a fair amount to get productive with it. I can easily imagine many a jQuery savvy web designer diving into Angular and getting quickly out of their comfort zone.\n\nBut when recently refactoring a non-trivial directive, I found those first steps can go a long way. The key is the usage of the declarative nature of AngularJS; using the building blocks of the framework to extend HTML. \n\n```language-markup\n<script type=\"text/ng-template\" id=\"error_notify.html\">\n  <span\n    class=\"input__error-message input__error-message--left\"\n    ng-show=\"anyInvalid()\"\n    ng-class=\"{ 'input__error-message--hint': isHint() }\"\n    ng-transclude>\n      {{ getErrorMsg() }}\n    </span>\n</script>\n```\n\nLooking at the template, we might not know *how* something happens, but we know *what* happens and, what is quite important in building interfaces, we can decide how it will look like. \n\n```language-markup\n<error-notify fields=\"phone\" hint-min-length=\"5\"></error-notify>\n```\n\nThis gives us a good amount of testability, abstraction, reusability and general high fives. The above template could be modified really a lot before you would have to dig in into the meat of the directive. \n\nThis gives us tremendous power\\*; something that we really need in building fantastic, responsive interfaces easily across web development teams with varying skillsets.\n\n\\* *But remember kids, with great power comes great responsibility!*",
+            "html": "<p>In one Google talk, Miško Hevery mentions that they wanted Angular to be used by designers. That statement can be dismissed easily. Angular is a complex beast and most people require a fair amount to get productive with it. I can easily imagine many a jQuery savvy web designer diving into Angular and getting quickly out of their comfort zone.</p>\n\n<p>But when recently refactoring a non-trivial directive, I found those first steps can go a long way. The key is the usage of the declarative nature of AngularJS; using the building blocks of the framework to extend HTML. </p>\n\n<pre><code class=\"language-markup\">&lt;script type=\"text/ng-template\" id=\"error_notify.html\"&gt;  \n  &lt;span\n    class=\"input__error-message input__error-message--left\"\n    ng-show=\"anyInvalid()\"\n    ng-class=\"{ 'input__error-message--hint': isHint() }\"\n    ng-transclude&gt;\n      {{ getErrorMsg() }}\n    &lt;/span&gt;\n&lt;/script&gt;  \n</code></pre>\n\n<p>Looking at the template, we might not know <em>how</em> something happens, but we know <em>what</em> happens and, what is quite important in building interfaces, we can decide how it will look like. </p>\n\n<pre><code class=\"language-markup\">&lt;error-notify fields=\"phone\" hint-min-length=\"5\"&gt;&lt;/error-notify&gt;  \n</code></pre>\n\n<p>This gives us a good amount of testability, abstraction, reusability and general high fives. The above template could be modified really a lot before you would have to dig in into the meat of the directive. </p>\n\n<p>This gives us tremendous power*; something that we really need in building fantastic, responsive interfaces easily across web development teams with varying skillsets.</p>\n\n<p>* <em>But remember kids, with great power comes great responsibility!</em></p>",
+            "image": null,
+            "featured": 0,
+            "page": 0,
+            "status": "published",
+            "language": "en_US",
+            "meta_title": null,
+            "meta_description": null,
+            "author_id": 1,
+            "created_at": 1385378569169,
+            "created_by": 1,
+            "updated_at": 1385467377215,
+            "updated_by": 1,
+            "published_at": 1385379672045,
+            "published_by": 1
+          },
+          {
+            "id": 3,
+            "uuid": "6eab7efa-6a8a-4113-a9a9-a59468ec72bb",
+            "title": "Building a tabs component with React and Foundation",
+            "slug": "building-a-simple-tabs-component-with-react",
+            "markdown": "After reading an [interesting article](http://swannodette.github.io/2013/12/17/the-future-of-javascript-mvcs/) and watching [this](http://www.youtube.com/watch?v=x7cQ3mrcKaY) excellent talk from JsConf a couple of days ago, I've decided to look more closely at [React](http://facebook.github.io/react/). I've dismissed it  when it came out, as it seemed to be flying in the face of everything we know about building the front-end (and it very much does!). But after going through the great documentation, tutorial and finally building a simple component myself I can see that there is some method to this madness. Coming from AngularJS, I've found that things React's concepts are a bit easier to reason about (by design). Worth noting, React has a much smaller scope then Angular and is supposed to only be the *V* in MV*  frameworks.\n\nI've decided to do a simple tabs component. This tutorial is quite exploratory, as React has some quirks you need to adhere to. Our base template will look like this:\n\n```language-markup\n<!DOCTYPE html>\n<html>\n  <head>\n    <link rel=\"stylesheet\" href=\"http://cdnjs.cloudflare.com/ajax/libs/foundation/5.0.2/css/foundation.min.css\">\n    <script src=\"http://fb.me/react-0.8.0.min.js\"></script>\n    <script src=\"http://fb.me/JSXTransformer-0.8.0.js\"></script>\n    <style>\n      // so we can see our component better\n      body { padding: 100px; }\n    </style>\n  </head>\n  <body>\n    <div id=\"content\"></div>\n    <script type=\"text/jsx\">\n\n      /** @jsx React.DOM */\n      \n      // the codes will go here\n  </body>\n</html>\n```\n\nWe're going to use [Foundation](http://foundation.zurb.com/) for our CSS. The two scripts are React's source and the JSX transformer, an optional part of React that lets you write XML like syntax inside of javascript. It's not supposed to be used in production - the React team provides an [npm tool](https://npmjs.org/package/react-tools) to precompile templates.\n\nNotice that the type of the script tag is `text/jsx` and the comment `/** @jsx React.DOM */`. This is needed for our script to be parsed correctly.\n\nLooking at the [Foundation docs](http://foundation.zurb.com/docs/components/tabs.html) we need a structure more or less like this for our tabs to get correct styling.\n\n```language-markup\n<dl class=\"tabs\" data-tab>\n  <dd class=\"active\"><a href=\"#panel2-1\">Tab 1</a></dd>\n  <dd><a href=\"#panel2-2\">Tab 2</a></dd>\n  <!-- ...more tabs... -->\n</dl>\n<div class=\"tabs-content\">\n  <div class=\"content active\" id=\"panel2-1\">\n    <p>First panel content goes here...</p>\n  </div>\n  <div class=\"content\" id=\"panel2-2\">\n    <p>Second panel content goes here...</p>\n  </div>\n  <!-- ...more panels... -->\n</div>\n```\n\nWe don't really need the `data-tab` attribute or specific links. Let's add some React code to our script tag.\n\n```language-javascript\nvar Tabs = React.createClass({\n  render: function() {\n    return (\n      <dl class=\"tabs\">\n        <dd class=\"active\">\n          <a href=\"#\">Tab 1</a>\n        </dd>\n        <dd>\n          <a href=\"#\">Tab 2</a>\n        </dd>\n      </dl>\n      <div class=\"tabs-content\">\n        <div class=\"content active\"> \n          <p>First panel content goes here...</p> \n        </div>\n        <div class=\"content\">\n          <p>Second panel content goes here...</p>\n        </div>\n      </div>\n    );\n  }\n});\n\nReact.renderComponent(\n  <Tabs />,\n  document.getElementById('content')\n);\n```\n\n`React.createClass` creates a new React component that's going to get stored in a variable. Inside, we specify the only required function `render`. And there we have a cleaned up Foundation tabs markup. \n\n`React.renderComponent` does as it says on the tin. The first argument is our component (note the XML syntax again) and second is the raw DOM node that the component will get inserted into.\n\nWe open our file and ... nothing. The above code has one mistake. The render function requires that we have only one root node, while in the above, we have two (the `dl` and `div`). So we need to add a div.\n\n```language-markup\n...\n  render: (\n    <div> <!-- new opening div -->\n      <dl class=\"tabs\">\n...\n      </div>\n    </div> <!-- new closing div -->\n...\n```\n\nTry again and we have *something*. If you look into your browser dev tools, it seems that React stripped out our CSS classes. This is because these are reserved keywords in javascript, so we need `className` instead. Read more [here](http://facebook.github.io/react/docs/jsx-in-depth.html). Let's update that as well.\n\n```language-markup\n...\n      <dl className=\"tabs\">\n        <dd className=\"active\">\n...\n```\n\nYay! This looks much more like the Foundation tabs. Made in pure XMLish Javascript. Right. Ekhm. Let's move on to the good parts. Let's make this work.\n\nFirst, dumping all your content inside your javascript is not very maintanable. We want to separate our content from our component. We need a way to pass data around. \n\nSecond, we need to switch panels when tabs are clicked. We need some notion of state.\n\nLet's make a simple array with our content.\n\n```language-javascript\nvar data = [\n  { title: \"Tab 1\", content: \"I am the content of the first tab.\" },\n  { title: \"Tab 2\", content: \"I am the content of the second tab.\" },\n  { title: \"Tab 3\", content: \"Third tab, buddy.\" }\n];\n```\n\nTo pass this content into our component we need to use `props`. These are React's way of passing immutable data from a parent to child (node, component). \n\n```language-javascript\nReact.renderComponent(\n  <Tabs data={data} />,\n  document.getElementById('content')\n);\n```\n\nThe braces let us evaluate expressions inside the JSX templates. So the above passes the data variable to components `props` property and can be accessed with `this.props.data` inside of our component definition.\n\n```language-javascript\n<dl className=\"tabs\">\n  {this.props.data.map(function (tab) {\n    return (\n      <dd>\n        <a href=\"#\">{tab.title}</a>\n      </dd>\n    )\n  })}\n</dl>\n```\n\nHere we again use the `{}` to evalute an expression. The rest is just javascript. We use `map` to create a new array of React components. `{tab.title}` gives us the title from `data` variable. Neat! Try to do the same for the content panels - the difference will be only in the HTML and the accessed property.  \n\nNow let's handle clicks. React introduces the notion of `state` for your components. `state` is private to the componets and can be changed with `setState`. With this call, the component re-renders itself. For us, state will keep the index of the tab.\n\n```language-javascript\nvar Tabs = React.createClass({\n  getInitialState: function() {\n    return {activeTab: 0};\n  },\n  handleClick: function(index) {\n    this.setState({activeTab: index});\n    return false;\n  },\n  render: function() {\n  //...more codes...\n```\n\n`getInitialState` is part of React's API and will set a  inital value. `handleClick` is our click handler which will take the index of the tab and change the `activeTab` value (and `return false` to prevent the browser default on `<a>` tags).\n\n```language-javascript\n{this.props.data.map(function (tab, index) {\n  var activeClass = this.state.activeTab === index ? 'active' : '';\n\n  return (\n    <dd className={'tab ' + activeClass} >\n      <a href=\"#\" onClick={this.handleClick.bind(this, index)}>{tab.title}</a>\n    </dd>\n  )\n}, this)}\n```\n\nThe `map` method exposes the index of the current element. We can compare that to the `state` of our component by accessing `this.state.activeTab`. If it's true, we are going to add the `active` CSS class.\n\nOn the `<a>` tag we are going to add an `onClick` attribute. React proxies DOM events so it can work even on IE8. We add our handler there, accessing it on the `this` variable. There is small javascript gotcha here though. Because we are in a anonymous function, the value of `this` is actually `window` (if we are working in the browser). We can change this by passing `this` as the second argument to `map`. \n\nWe also need to pass `index` to `handleClick`. Again, native (ok, modern) javascript to the rescue! We can use bind to pass arguments to the function when it will be called. The first argument is the context that function is supposed to have, so we pass `this`.\n\nAnd ... that's it. The whole component looks like this:\n\n```language-javascript\n/** @jsx React.DOM */\n\nvar data = [\n  { title: \"Tab 1\", content: \"I am the content of the first tab.\" },\n  { title: \"Tab 2\", content: \"I am the content of the second tab.\" },\n  { title: \"Tab 3\", content: \"Third tab, buddy.\" }\n];\n\nvar Tabs = React.createClass({\n  getInitialState: function() {\n    return {activeTab: 0};\n  },\n  handleClick: function(index) {\n    this.setState({activeTab: index});\n    return false;\n  },\n  render: function() {\n    return (\n      <div>\n        <dl className=\"tabs\">\n          {this.props.data.map(function (tab, index) {\n            var activeClass = this.state.activeTab === index ? 'active' : '';\n\n            return (\n              <dd className={'tab ' + activeClass} >\n                <a href=\"#\" onClick={this.handleClick.bind(this, index)}>{tab.title}</a>\n              </dd>\n            )\n          }, this)}\n        </dl>\n        <div className=\"tabs-content\">\n          {this.props.data.map(function (tab, index) {\n            var activeClass = this.state.activeTab === index ? 'active' : '';\n\n            return (\n              <div className={'content ' + activeClass}>\n                <p>{tab.content}</p>\n              </div>\n            )\n          }, this)}\n        </div>\n      </div>\n    );\n  }\n});\n\nReact.renderComponent(\n  <Tabs data={data} />,\n  document.getElementById('content')\n);\n```\n\nThis could probably be DRY'ied up a bit, but the logic is simple at this point and it is quite clear where the component state, HTML and click handlers reside.\n",
+            "html": "<p>After reading an <a href=\"http://swannodette.github.io/2013/12/17/the-future-of-javascript-mvcs/\">interesting article</a> and watching <a href=\"http://www.youtube.com/watch?v=x7cQ3mrcKaY\">this</a> excellent talk from JsConf a couple of days ago, I've decided to look more closely at <a href=\"http://facebook.github.io/react/\">React</a>. I've dismissed it  when it came out, as it seemed to be flying in the face of everything we know about building the front-end (and it very much does!). But after going through the great documentation, tutorial and finally building a simple component myself I can see that there is some method to this madness. Coming from AngularJS, I've found that things React's concepts are a bit easier to reason about (by design). Worth noting, React has a much smaller scope then Angular and is supposed to only be the <em>V</em> in MV*  frameworks.</p>\n\n<p>I've decided to do a simple tabs component. This tutorial is quite exploratory, as React has some quirks you need to adhere to. Our base template will look like this:</p>\n\n<pre><code class=\"language-markup\">&lt;!DOCTYPE html&gt;  \n&lt;html&gt;  \n  &lt;head&gt;\n    &lt;link rel=\"stylesheet\" href=\"http://cdnjs.cloudflare.com/ajax/libs/foundation/5.0.2/css/foundation.min.css\"&gt;\n    &lt;script src=\"http://fb.me/react-0.8.0.min.js\"&gt;&lt;/script&gt;\n    &lt;script src=\"http://fb.me/JSXTransformer-0.8.0.js\"&gt;&lt;/script&gt;\n    &lt;style&gt;\n      // so we can see our component better\n      body { padding: 100px; }\n    &lt;/style&gt;\n  &lt;/head&gt;\n  &lt;body&gt;\n    &lt;div id=\"content\"&gt;&lt;/div&gt;\n    &lt;script type=\"text/jsx\"&gt;\n\n      /** @jsx React.DOM */\n\n      // the codes will go here\n  &lt;/body&gt;\n&lt;/html&gt;  \n</code></pre>\n\n<p>We're going to use <a href=\"http://foundation.zurb.com/\">Foundation</a> for our CSS. The two scripts are React's source and the JSX transformer, an optional part of React that lets you write XML like syntax inside of javascript. It's not supposed to be used in production - the React team provides an <a href=\"https://npmjs.org/package/react-tools\">npm tool</a> to precompile templates.</p>\n\n<p>Notice that the type of the script tag is <code>text/jsx</code> and the comment <code>/** @jsx React.DOM */</code>. This is needed for our script to be parsed correctly.</p>\n\n<p>Looking at the <a href=\"http://foundation.zurb.com/docs/components/tabs.html\">Foundation docs</a> we need a structure more or less like this for our tabs to get correct styling.</p>\n\n<pre><code class=\"language-markup\">&lt;dl class=\"tabs\" data-tab&gt;  \n  &lt;dd class=\"active\"&gt;&lt;a href=\"#panel2-1\"&gt;Tab 1&lt;/a&gt;&lt;/dd&gt;\n  &lt;dd&gt;&lt;a href=\"#panel2-2\"&gt;Tab 2&lt;/a&gt;&lt;/dd&gt;\n  &lt;!-- ...more tabs... --&gt;\n&lt;/dl&gt;  \n&lt;div class=\"tabs-content\"&gt;  \n  &lt;div class=\"content active\" id=\"panel2-1\"&gt;\n    &lt;p&gt;First panel content goes here...&lt;/p&gt;\n  &lt;/div&gt;\n  &lt;div class=\"content\" id=\"panel2-2\"&gt;\n    &lt;p&gt;Second panel content goes here...&lt;/p&gt;\n  &lt;/div&gt;\n  &lt;!-- ...more panels... --&gt;\n&lt;/div&gt;  \n</code></pre>\n\n<p>We don't really need the <code>data-tab</code> attribute or specific links. Let's add some React code to our script tag.</p>\n\n<pre><code class=\"language-javascript\">var Tabs = React.createClass({  \n  render: function() {\n    return (\n      &lt;dl class=\"tabs\"&gt;\n        &lt;dd class=\"active\"&gt;\n          &lt;a href=\"#\"&gt;Tab 1&lt;/a&gt;\n        &lt;/dd&gt;\n        &lt;dd&gt;\n          &lt;a href=\"#\"&gt;Tab 2&lt;/a&gt;\n        &lt;/dd&gt;\n      &lt;/dl&gt;\n      &lt;div class=\"tabs-content\"&gt;\n        &lt;div class=\"content active\"&gt; \n          &lt;p&gt;First panel content goes here...&lt;/p&gt; \n        &lt;/div&gt;\n        &lt;div class=\"content\"&gt;\n          &lt;p&gt;Second panel content goes here...&lt;/p&gt;\n        &lt;/div&gt;\n      &lt;/div&gt;\n    );\n  }\n});\n\nReact.renderComponent(  \n  &lt;Tabs /&gt;,\n  document.getElementById('content')\n);\n</code></pre>\n\n<p><code>React.createClass</code> creates a new React component that's going to get stored in a variable. Inside, we specify the only required function <code>render</code>. And there we have a cleaned up Foundation tabs markup. </p>\n\n<p><code>React.renderComponent</code> does as it says on the tin. The first argument is our component (note the XML syntax again) and second is the raw DOM node that the component will get inserted into.</p>\n\n<p>We open our file and ... nothing. The above code has one mistake. The render function requires that we have only one root node, while in the above, we have two (the <code>dl</code> and <code>div</code>). So we need to add a div.</p>\n\n<pre><code class=\"language-markup\">...\n  render: (\n    &lt;div&gt; &lt;!-- new opening div --&gt;\n      &lt;dl class=\"tabs\"&gt;\n...\n      &lt;/div&gt;\n    &lt;/div&gt; &lt;!-- new closing div --&gt;\n...\n</code></pre>\n\n<p>Try again and we have <em>something</em>. If you look into your browser dev tools, it seems that React stripped out our CSS classes. This is because these are reserved keywords in javascript, so we need <code>className</code> instead. Read more <a href=\"http://facebook.github.io/react/docs/jsx-in-depth.html\">here</a>. Let's update that as well.</p>\n\n<pre><code class=\"language-markup\">...\n      &lt;dl className=\"tabs\"&gt;\n        &lt;dd className=\"active\"&gt;\n...\n</code></pre>\n\n<p>Yay! This looks much more like the Foundation tabs. Made in pure XMLish Javascript. Right. Ekhm. Let's move on to the good parts. Let's make this work.</p>\n\n<p>First, dumping all your content inside your javascript is not very maintanable. We want to separate our content from our component. We need a way to pass data around. </p>\n\n<p>Second, we need to switch panels when tabs are clicked. We need some notion of state.</p>\n\n<p>Let's make a simple array with our content.</p>\n\n<pre><code class=\"language-javascript\">var data = [  \n  { title: \"Tab 1\", content: \"I am the content of the first tab.\" },\n  { title: \"Tab 2\", content: \"I am the content of the second tab.\" },\n  { title: \"Tab 3\", content: \"Third tab, buddy.\" }\n];\n</code></pre>\n\n<p>To pass this content into our component we need to use <code>props</code>. These are React's way of passing immutable data from a parent to child (node, component). </p>\n\n<pre><code class=\"language-javascript\">React.renderComponent(  \n  &lt;Tabs data={data} /&gt;,\n  document.getElementById('content')\n);\n</code></pre>\n\n<p>The braces let us evaluate expressions inside the JSX templates. So the above passes the data variable to components <code>props</code> property and can be accessed with <code>this.props.data</code> inside of our component definition.</p>\n\n<pre><code class=\"language-javascript\">&lt;dl className=\"tabs\"&gt;  \n  {this.props.data.map(function (tab) {\n    return (\n      &lt;dd&gt;\n        &lt;a href=\"#\"&gt;{tab.title}&lt;/a&gt;\n      &lt;/dd&gt;\n    )\n  })}\n&lt;/dl&gt;  \n</code></pre>\n\n<p>Here we again use the <code>{}</code> to evalute an expression. The rest is just javascript. We use <code>map</code> to create a new array of React components. <code>{tab.title}</code> gives us the title from <code>data</code> variable. Neat! Try to do the same for the content panels - the difference will be only in the HTML and the accessed property.  </p>\n\n<p>Now let's handle clicks. React introduces the notion of <code>state</code> for your components. <code>state</code> is private to the componets and can be changed with <code>setState</code>. With this call, the component re-renders itself. For us, state will keep the index of the tab.</p>\n\n<pre><code class=\"language-javascript\">var Tabs = React.createClass({  \n  getInitialState: function() {\n    return {activeTab: 0};\n  },\n  handleClick: function(index) {\n    this.setState({activeTab: index});\n    return false;\n  },\n  render: function() {\n  //...more codes...\n</code></pre>\n\n<p><code>getInitialState</code> is part of React's API and will set a  inital value. <code>handleClick</code> is our click handler which will take the index of the tab and change the <code>activeTab</code> value (and <code>return false</code> to prevent the browser default on <code>&lt;a&gt;</code> tags).</p>\n\n<pre><code class=\"language-javascript\">{this.props.data.map(function (tab, index) {\n  var activeClass = this.state.activeTab === index ? 'active' : '';\n\n  return (\n    &lt;dd className={'tab ' + activeClass} &gt;\n      &lt;a href=\"#\" onClick={this.handleClick.bind(this, index)}&gt;{tab.title}&lt;/a&gt;\n    &lt;/dd&gt;\n  )\n}, this)}\n</code></pre>\n\n<p>The <code>map</code> method exposes the index of the current element. We can compare that to the <code>state</code> of our component by accessing <code>this.state.activeTab</code>. If it's true, we are going to add the <code>active</code> CSS class.</p>\n\n<p>On the <code>&lt;a&gt;</code> tag we are going to add an <code>onClick</code> attribute. React proxies DOM events so it can work even on IE8. We add our handler there, accessing it on the <code>this</code> variable. There is small javascript gotcha here though. Because we are in a anonymous function, the value of <code>this</code> is actually <code>window</code> (if we are working in the browser). We can change this by passing <code>this</code> as the second argument to <code>map</code>. </p>\n\n<p>We also need to pass <code>index</code> to <code>handleClick</code>. Again, native (ok, modern) javascript to the rescue! We can use bind to pass arguments to the function when it will be called. The first argument is the context that function is supposed to have, so we pass <code>this</code>.</p>\n\n<p>And ... that's it. The whole component looks like this:</p>\n\n<pre><code class=\"language-javascript\">/** @jsx React.DOM */\n\nvar data = [  \n  { title: \"Tab 1\", content: \"I am the content of the first tab.\" },\n  { title: \"Tab 2\", content: \"I am the content of the second tab.\" },\n  { title: \"Tab 3\", content: \"Third tab, buddy.\" }\n];\n\nvar Tabs = React.createClass({  \n  getInitialState: function() {\n    return {activeTab: 0};\n  },\n  handleClick: function(index) {\n    this.setState({activeTab: index});\n    return false;\n  },\n  render: function() {\n    return (\n      &lt;div&gt;\n        &lt;dl className=\"tabs\"&gt;\n          {this.props.data.map(function (tab, index) {\n            var activeClass = this.state.activeTab === index ? 'active' : '';\n\n            return (\n              &lt;dd className={'tab ' + activeClass} &gt;\n                &lt;a href=\"#\" onClick={this.handleClick.bind(this, index)}&gt;{tab.title}&lt;/a&gt;\n              &lt;/dd&gt;\n            )\n          }, this)}\n        &lt;/dl&gt;\n        &lt;div className=\"tabs-content\"&gt;\n          {this.props.data.map(function (tab, index) {\n            var activeClass = this.state.activeTab === index ? 'active' : '';\n\n            return (\n              &lt;div className={'content ' + activeClass}&gt;\n                &lt;p&gt;{tab.content}&lt;/p&gt;\n              &lt;/div&gt;\n            )\n          }, this)}\n        &lt;/div&gt;\n      &lt;/div&gt;\n    );\n  }\n});\n\nReact.renderComponent(  \n  &lt;Tabs data={data} /&gt;,\n  document.getElementById('content')\n);\n</code></pre>\n\n<p>This could probably be DRY'ied up a bit, but the logic is simple at this point and it is quite clear where the component state, HTML and click handlers reside.</p>",
+            "image": null,
+            "featured": 0,
+            "page": 0,
+            "status": "published",
+            "language": "en_US",
+            "meta_title": null,
+            "meta_description": null,
+            "author_id": 1,
+            "created_at": 1387706033846,
+            "created_by": 1,
+            "updated_at": 1387735948151,
+            "updated_by": 1,
+            "published_at": 1387734099826,
+            "published_by": 1
+          },
+          {
+            "id": 4,
+            "uuid": "23c5c533-13c2-4560-b787-bba2602f02c7",
+            "title": "Using Chrome DevTools to debug slow framerates",
+            "slug": "using-chrome-devtools-timeline-to-make-your-site-faster",
+            "markdown": "The `Timeline` tab in Chrome DevTools offers a peak into the stages of displaying a web page, offering insight into what is happening under the hood. If you are not sure what `Paint`, `Recalculate Style` and `Composite Layers` means, head on to [this excellent talk by Paul Lewis](http://vimeo.com/71362583).\n\nI've stumbled recently upon [Unify](http://unicode.johnholtripley.co.uk/) - a webpage dedicated to tracking browser support for unicode characters. It's great, but if you go into a view with a lot characters, the framerate plummets. So let's have a look under the hood if we can find out what's happening.\n\nLet's enable two options first. The framerate count and `Paint` rectangles. The latter shows us sections which are rerendered by the browser. Open the DevTools and click the widget in the bottom-right corner. \n\n![](/content/images/2014/Jan/Screen_Shot_2014_01_02_at_15_52_20.png)\n\nNow start scrolling. The framerate drops radically and the whole screen will go red indicating that the whole document is being re-rendered. Framerate depends on your machine, but on my Macbook Air it drops to ~5fps.\n\n![](/content/images/2014/Feb/Screen_Shot_2014_01_02_at_15_58_57.png)\n\nLet's open the Timeline tab and have a closer look. Hit record and start scrolling for a few seconds. Long green bars representing paint times stand out - and they take way longer then anything else.\n\n![](/content/images/2014/Feb/Screen_Shot_2014_02_01_at_14_27_36-1.png)\n\nIf you have a closer look, there seems to be nothing  changes when we scroll. Disable javascript (same options screen we used a moment ago) and you'll see the problem stays. Now, one of the recommended ways to debug these kind of problems is to hide DOM nodes and see if performance improves. We can do this by going to the `Elements` tab, highlighting a node and pressing `h`. This will set `display: none` on it.\n\nUnfortunately, our page is very simple and *duh*, if we hide the table it gets fast - this does not help us at all then.\n\nYou might notice something about the background though. It's a subtle pattern, so it might not be immediately that clear but it's fixed. So when we scroll our massive table, the simple, repeating background and table need to be redrawn. If you look at the `body` tag in the `Elements` tab it has a style of `background-attachment: fixed;`. When removed, *voila* our framerate stays within 30-60fps (unless you are on IE8).\n\nInvestigating rendering issues is not always easy, but with better tooling and insight into what is happening in the browser, it's at least very much possible.\n\n",
+            "html": "<p>The <code>Timeline</code> tab in Chrome DevTools offers a peak into the stages of displaying a web page, offering insight into what is happening under the hood. If you are not sure what <code>Paint</code>, <code>Recalculate Style</code> and <code>Composite Layers</code> means, head on to <a href=\"http://vimeo.com/71362583\">this excellent talk by Paul Lewis</a>.</p>\n\n<p>I've stumbled recently upon <a href=\"http://unicode.johnholtripley.co.uk/\">Unify</a> - a webpage dedicated to tracking browser support for unicode characters. It's great, but if you go into a view with a lot characters, the framerate plummets. So let's have a look under the hood if we can find out what's happening.</p>\n\n<p>Let's enable two options first. The framerate count and <code>Paint</code> rectangles. The latter shows us sections which are rerendered by the browser. Open the DevTools and click the widget in the bottom-right corner. </p>\n\n<p><img src=\"/content/images/2014/Jan/Screen_Shot_2014_01_02_at_15_52_20.png\" alt=\"\" /></p>\n\n<p>Now start scrolling. The framerate drops radically and the whole screen will go red indicating that the whole document is being re-rendered. Framerate depends on your machine, but on my Macbook Air it drops to ~5fps.</p>\n\n<p><img src=\"/content/images/2014/Feb/Screen_Shot_2014_01_02_at_15_58_57.png\" alt=\"\" /></p>\n\n<p>Let's open the Timeline tab and have a closer look. Hit record and start scrolling for a few seconds. Long green bars representing paint times stand out - and they take way longer then anything else.</p>\n\n<p><img src=\"/content/images/2014/Feb/Screen_Shot_2014_02_01_at_14_27_36-1.png\" alt=\"\" /></p>\n\n<p>If you have a closer look, there seems to be nothing  changes when we scroll. Disable javascript (same options screen we used a moment ago) and you'll see the problem stays. Now, one of the recommended ways to debug these kind of problems is to hide DOM nodes and see if performance improves. We can do this by going to the <code>Elements</code> tab, highlighting a node and pressing <code>h</code>. This will set <code>display: none</code> on it.</p>\n\n<p>Unfortunately, our page is very simple and <em>duh</em>, if we hide the table it gets fast - this does not help us at all then.</p>\n\n<p>You might notice something about the background though. It's a subtle pattern, so it might not be immediately that clear but it's fixed. So when we scroll our massive table, the simple, repeating background and table need to be redrawn. If you look at the <code>body</code> tag in the <code>Elements</code> tab it has a style of <code>background-attachment: fixed;</code>. When removed, <em>voila</em> our framerate stays within 30-60fps (unless you are on IE8).</p>\n\n<p>Investigating rendering issues is not always easy, but with better tooling and insight into what is happening in the browser, it's at least very much possible.</p>",
+            "image": null,
+            "featured": 0,
+            "page": 0,
+            "status": "published",
+            "language": "en_US",
+            "meta_title": null,
+            "meta_description": null,
+            "author_id": 1,
+            "created_at": 1388659944233,
+            "created_by": 1,
+            "updated_at": 1391289790903,
+            "updated_by": 1,
+            "published_at": 1391266728374,
+            "published_by": 1
+          },
+          {
+            "id": 5,
+            "uuid": "b7e2e704-b4e6-4553-9bc1-d9aab00706ae",
+            "title": "How to start learning AngularJS",
+            "slug": "how-to-start-learning-angularjs",
+            "markdown": "Although very popular, good and comprehensive AngularJS learning matarials are only starting to emerge. It's easy enough to jump into the framework, but no doubt you will quickly get stuck and with some misfortune, you could land on a well meant but outdated Stack Overflow answer.\n\nIf I would start learning Angular JS today I would:\n\n1. **Do the tutorial phone app on the Angular website**\nIt is the best overview of all that Angular has to offer and has tests for all the steps, which are often missing in other tutorials.\n2. **Get a big book**\nThere are at least a few now. My current favourite is the [ng-book](https://www.ng-book.com/). It has a good pace and lots of examples. Read it and keep it handy.\n3. **Start building something**\nFind a project and start building something straight away. Angular has a lot of gotchas, often relying on core javascript features (prototypal inheritance for scopes, pojo's for models) as well as employing some \"hacks\" to get things like DI going. It's good to experience these early on, so you know where things are not what they seem.\n4. **When you are stuck, watch some videos or dig into articles**\nCheck this [repo by jmcunningham](https://github.com/jmcunningham/AngularJS-Learning) for a ton of various resources on Angular. A very popular destination for bite sized videos is [egghead.io](https://egghead.io/).\n\n**Bonus step:**\n[Build your own Angular](http://teropa.info/build-your-own-angular/) - at the time of writing, this is an early-access book. The content is second only to reading the source code itself, but much easier to chew down.\n",
+            "html": "<p>Although very popular, good and comprehensive AngularJS learning matarials are only starting to emerge. It's easy enough to jump into the framework, but no doubt you will quickly get stuck and with some misfortune, you could land on a well meant but outdated Stack Overflow answer.</p>\n\n<p>If I would start learning Angular JS today I would:</p>\n\n<ol>\n<li><strong>Do the tutorial phone app on the Angular website</strong> <br />\nIt is the best overview of all that Angular has to offer and has tests for all the steps, which are often missing in other tutorials.  </li>\n<li><strong>Get a big book</strong> <br />\nThere are at least a few now. My current favourite is the <a href=\"https://www.ng-book.com/\">ng-book</a>. It has a good pace and lots of examples. Read it and keep it handy.  </li>\n<li><strong>Start building something</strong> <br />\nFind a project and start building something straight away. Angular has a lot of gotchas, often relying on core javascript features (prototypal inheritance for scopes, pojo's for models) as well as employing some \"hacks\" to get things like DI going. It's good to experience these early on, so you know where things are not what they seem.  </li>\n<li><strong>When you are stuck, watch some videos or dig into articles</strong> <br />\nCheck this <a href=\"https://github.com/jmcunningham/AngularJS-Learning\">repo by jmcunningham</a> for a ton of various resources on Angular. A very popular destination for bite sized videos is <a href=\"https://egghead.io/\">egghead.io</a>.</li>\n</ol>\n\n<p><strong>Bonus step:</strong>\n<a href=\"http://teropa.info/build-your-own-angular/\">Build your own Angular</a> - at the time of writing, this is an early-access book. The content is second only to reading the source code itself, but much easier to chew down.</p>",
+            "image": null,
+            "featured": 0,
+            "page": 0,
+            "status": "published",
+            "language": "en_US",
+            "meta_title": null,
+            "meta_description": null,
+            "author_id": 1,
+            "created_at": 1392290010551,
+            "created_by": 1,
+            "updated_at": 1395485999718,
+            "updated_by": 1,
+            "published_at": 1395485616010,
+            "published_by": 1
+          },
+          {
+            "id": 6,
+            "uuid": "c9cd618e-58f6-4e3f-9a77-35d3412e6e91",
+            "title": "Style guides, component libraries and documentation: describing things and creating conversations",
+            "slug": "describing-things-and-making-conversations",
+            "markdown": "The technology around us is changing fast. What is not changing fast is people and processes that govern how we work together. All the best projects I’ve worked on had one thing in common: great communication, regardless of the odds. Thus one of my favourite trends recently is more focus of how visual designers work with software designers. We have a lot in common - we both work towards building a living, evolving thing by producing snapshots of it in time. Effectively though, the language, the culture and processes are different (it's easier on teams with cross-disciplinary and full-stack people) so often a lot of time is spent explaining our problem domains.\n\nStyle guides & component libraries are powerful tools to help with this. Their aim should be to create a visual language that both groups can use to iterate on ideas. Properly made, they enforce focus on granular elements of the design as well safeguarding design consistency. They allow for experimentation out of the context. There is place for the design rationale and usage patterns. This helps enforce modularity (because large, problematic components become quickly apparent) and expose certain kind of problems early (like duplication of patterns, coupling, poor rationale etc).\n\nIt's not easy to keep any kind of documentation up to date. But this is because it is often an afterthought. It needs to be part of your and the team's workflow. It should be easy to contribute and use. Automate all that can be automated and a lot of the traction needed to create it will go away. Put it in the center of what people do.\n\nExecuted properly, documentation, style guides and component libraries promote conversations and improve communication within a team. And on web the platform, where trends change with seasons a team that is flexible, open and can communicate efficiently will have less problems adapting and can achieve better focus. ",
+            "html": "<p>The technology around us is changing fast. What is not changing fast is people and processes that govern how we work together. All the best projects I’ve worked on had one thing in common: great communication, regardless of the odds. Thus one of my favourite trends recently is more focus of how visual designers work with software designers. We have a lot in common - we both work towards building a living, evolving thing by producing snapshots of it in time. Effectively though, the language, the culture and processes are different (it's easier on teams with cross-disciplinary and full-stack people) so often a lot of time is spent explaining our problem domains.</p>\n\n<p>Style guides &amp; component libraries are powerful tools to help with this. Their aim should be to create a visual language that both groups can use to iterate on ideas. Properly made, they enforce focus on granular elements of the design as well safeguarding design consistency. They allow for experimentation out of the context. There is place for the design rationale and usage patterns. This helps enforce modularity (because large, problematic components become quickly apparent) and expose certain kind of problems early (like duplication of patterns, coupling, poor rationale etc).</p>\n\n<p>It's not easy to keep any kind of documentation up to date. But this is because it is often an afterthought. It needs to be part of your and the team's workflow. It should be easy to contribute and use. Automate all that can be automated and a lot of the traction needed to create it will go away. Put it in the center of what people do.</p>\n\n<p>Executed properly, documentation, style guides and component libraries promote conversations and improve communication within a team. And on web the platform, where trends change with seasons a team that is flexible, open and can communicate efficiently will have less problems adapting and can achieve better focus. </p>",
+            "image": null,
+            "featured": 0,
+            "page": 0,
+            "status": "published",
+            "language": "en_US",
+            "meta_title": null,
+            "meta_description": null,
+            "author_id": 1,
+            "created_at": 1418215950565,
+            "created_by": 1,
+            "updated_at": 1418225955634,
+            "updated_by": 1,
+            "published_at": 1418225191595,
+            "published_by": 1
+          },
+          {
+            "id": 7,
+            "uuid": "75015fe3-bd51-4cef-abb8-dbad0dbd3e83",
+            "title": "Meet Taco, a CSS grid systems generator",
+            "slug": "meet-taco-a-css-grid-systems-generator",
+            "markdown": "CSS grid systems are incredibly helpful. They are one of the key components to make your HTML & CSS clearer and more concise, as they get rid of a lot of sizing micro-management. In the past, I've built upon [InuitCSS](https://github.com/inuitcss/objects.layout) which is a great and simple grid. For all projects though, I always had to diverge a little bit from it - either in naming or outputted CSS. So I decided to wrap it into a simple library - enter [Taco](http://dpiatek.github.io).\n\nIt goes a few steps further in flexibility: you have more control over naming, type of grid (float or inline-block) and it gives you the ability to output the minimal amount of CSS and classes so you can easily create multiple grid systems that can live next to each other.\n\nI take a bit of a different approach to responsive classes: you get a function to create multiple column classes easily, so you can just put them under any media-query and voilà! Check out the [website](http://dpiatek.github.io/taco/) for examples and API.\n\nI'm currently working on adding Sass & Less support as well as a test suite. I want to try to add flexbox support as well - although I'm not sure the same class structure that I've used for grids makes sense for flexbox as well (it would be really cool though to be able to flip between them as needed!).",
+            "html": "<p>CSS grid systems are incredibly helpful. They are one of the key components to make your HTML &amp; CSS clearer and more concise, as they get rid of a lot of sizing micro-management. In the past, I've built upon <a href=\"https://github.com/inuitcss/objects.layout\">InuitCSS</a> which is a great and simple grid. For all projects though, I always had to diverge a little bit from it - either in naming or outputted CSS. So I decided to wrap it into a simple library - enter <a href=\"http://dpiatek.github.io\">Taco</a>.</p>\n\n<p>It goes a few steps further in flexibility: you have more control over naming, type of grid (float or inline-block) and it gives you the ability to output the minimal amount of CSS and classes so you can easily create multiple grid systems that can live next to each other.</p>\n\n<p>I take a bit of a different approach to responsive classes: you get a function to create multiple column classes easily, so you can just put them under any media-query and voilà! Check out the <a href=\"http://dpiatek.github.io/taco/\">website</a> for examples and API.</p>\n\n<p>I'm currently working on adding Sass &amp; Less support as well as a test suite. I want to try to add flexbox support as well - although I'm not sure the same class structure that I've used for grids makes sense for flexbox as well (it would be really cool though to be able to flip between them as needed!).</p>",
+            "image": null,
+            "featured": 0,
+            "page": 0,
+            "status": "published",
+            "language": "en_US",
+            "meta_title": null,
+            "meta_description": null,
+            "author_id": 1,
+            "created_at": 1420467898606,
+            "created_by": 1,
+            "updated_at": 1420641537299,
+            "updated_by": 1,
+            "published_at": 1420641102100,
+            "published_by": 1
+          },
+          {
+            "id": 8,
+            "uuid": "ab703813-c446-4c21-943e-f1b4bbf5e9a8",
+            "title": "Writing better CSS with meaningful class selectors",
+            "slug": "writing-better-css-component-classes-or-css-the-good-parts",
+            "markdown": "With the rise of frameworks like React, Angular, Ember and the Web Components spec, the web seems to be moving towards a more components based approach to building apps. The abstractions for these are getting better, except for one part: CSS. In many ways, we write CSS just as we wrote it years ago. Even if we think about our UI as being more modular, the CSS is still spaghetti. Last year I was tasked with designing a CSS system for a components library and after much trial and error I found a quite satisfying pattern, that allowed for the codebase to grow in a quick and maintainable way.\n\nLet’s start by looking at some standard *spaghetti*. Say we “think” about our CSS classes as “components”.\n\n```language-css\n.menu\n.overlay\n.button\n```\n\nAnd we want a “modular” CSS system. So we start writing rules like this:\n\n```language-css\n.menu .overlay > .button\n#home .sidebar.managers-special\n```\n\n*Stop.*\n\nLast time I checked “modular” did not mean *cobble everything together with a jackhammer*. All our elements are now tied together and the selector makes it ambiguous where it belongs (is it part of the page? Is it then a “Component”?). By side effect, it will also force our HTML to a certain structure as well.\n\n```language-markup\n<nav class=\"menu\">\n  <div class=\"overlay\">\n    <button class=\"button\">I am button</button>\n  </div>\n</nav>\n```\n\nIt's not uncommon to mix \"components\" as well:\n\n```language-markup\n<div class=\"menu overlay\"></div>\n```\n\nThe \"flexibility\" of the language is what makes it so hard to reason about; could we avoid some of it’s features to make it better? \n\nFrom my experience, the answer is yes. \n\nClasses are the most powerful selectors because we have the most control about what they actually *mean*. But if that meaning is fuzzy and not respected, we lose its benefit. We need to make sure that the way we write our selectors keeps their meaning and not muddies it. \n\nWhen working on a pattern library for [econsultancy.com](https://econsultancy.com) I've experimented a lot with approaches to writing such classes, and ended up with 3 rules with help the most:\n\n\n***1.** A CSS class always represents a component. Any other abstractions that a CSS class may represent needs a prefix, suffix or what have you - they need to be easily distinguishable and the convention needs to be well established.*\n\nExample:\n```language-css\n// In this project, components are:\n.menu\n.menu-title\n\n// Classes that modify a component start with a `-`\n.-left-aligned\n.-in-sidebar\n\n// Helpers are started with `h-`\n.h-margin-bottom\n\n// Theming classes are started with `t-`\n.t-brand-color\n```\n\n\n***2.** All CSS selectors that contain a CSS component class must start with it and they must not modify any other CSS component class or it’s children directly (by referencing it - so a selector can ever include only a single CSS component class) or indirectly (by element selectors for example).*\n\nExample:\n```language-markup\n// Given this HTML, where components are `main-logo`, `.menu` and `.menu-item`:\n<header>\n  <img src=/images/logo.png class=“main-logo”>\n  <ul class=\"menu\">\n    <li class=\"menu-item\">\n      <img src=\"/images/avatar.jpg\">\n      <a href=#profile>Go to profile</a>\n    </li>\n    <li class=\"menu-item -last\">\n      <img src=\"/images/avatar.jpg\">\n      <a href=#profile>Go to profile</a>\n    </li>\n  </ul>\n</header>\n```\n\n```language-css\n// Ok selectors. Element selectors here would be defaults for given tags.\nimg\na\nheader\n.main-logo\n.menu\n.menu-item a\n.menu-item img ~ a\n.menu-item.-last\n\n// Not ok\nheader a\nheader .menu\n.menu .menu-item\nimg ~ a\n.menu-item img ~ a\n.menu li:nth-child(2) a\n```\n\n\n***3.** An HTML tag can only have a single CSS component class.*\n\nExample:\n```language-markup\n// Ok\n<button class=\"action-button\">\n<section class=\"panel\">\n\n// Not ok\n<div class=\"menu parallax-scroller click-hijacker-visible\">\n<a class=\"action-btn trigger-overlay\">\n<ul class=\"sub-menu facets\">\n```\n\n\nAs with any subset, in some cases this will make writing some of your CSS harder and more verbose. It’s probably an overkill for smallish projects, where what you need a stylesheet and not a component library. It’s probably not well suited to drawing iPhones with box-shadows either. \n\nThings can be done with preprocessors to simplify this approach. For example, on the aforementioned project, we used SCSS and all classes were output with mixins. This made for some crazy looking CSS, but in the end, all developers on the project found it much more easier to extend and reason about our CSS.\n\n",
+            "html": "<p>With the rise of frameworks like React, Angular, Ember and the Web Components spec, the web seems to be moving towards a more components based approach to building apps. The abstractions for these are getting better, except for one part: CSS. In many ways, we write CSS just as we wrote it years ago. Even if we think about our UI as being more modular, the CSS is still spaghetti. Last year I was tasked with designing a CSS system for a components library and after much trial and error I found a quite satisfying pattern, that allowed for the codebase to grow in a quick and maintainable way.</p>\n\n<p>Let’s start by looking at some standard <em>spaghetti</em>. Say we “think” about our CSS classes as “components”.</p>\n\n<pre><code class=\"language-css\">.menu\n.overlay\n.button\n</code></pre>\n\n<p>And we want a “modular” CSS system. So we start writing rules like this:</p>\n\n<pre><code class=\"language-css\">.menu .overlay &gt; .button\n#home .sidebar.managers-special\n</code></pre>\n\n<p><em>Stop.</em></p>\n\n<p>Last time I checked “modular” did not mean <em>cobble everything together with a jackhammer</em>. All our elements are now tied together and the selector makes it ambiguous where it belongs (is it part of the page? Is it then a “Component”?). By side effect, it will also force our HTML to a certain structure as well.</p>\n\n<pre><code class=\"language-markup\">&lt;nav class=\"menu\"&gt;  \n  &lt;div class=\"overlay\"&gt;\n    &lt;button class=\"button\"&gt;I am button&lt;/button&gt;\n  &lt;/div&gt;\n&lt;/nav&gt;  \n</code></pre>\n\n<p>It's not uncommon to mix \"components\" as well:</p>\n\n<pre><code class=\"language-markup\">&lt;div class=\"menu overlay\"&gt;&lt;/div&gt;  \n</code></pre>\n\n<p>The \"flexibility\" of the language is what makes it so hard to reason about; could we avoid some of it’s features to make it better? </p>\n\n<p>From my experience, the answer is yes. </p>\n\n<p>Classes are the most powerful selectors because we have the most control about what they actually <em>mean</em>. But if that meaning is fuzzy and not respected, we lose its benefit. We need to make sure that the way we write our selectors keeps their meaning and not muddies it. </p>\n\n<p>When working on a pattern library for <a href=\"https://econsultancy.com\">econsultancy.com</a> I've experimented a lot with approaches to writing such classes, and ended up with 3 rules with help the most:</p>\n\n<p><strong><em>1.</strong> A CSS class always represents a component. Any other abstractions that a CSS class may represent needs a prefix, suffix or what have you - they need to be easily distinguishable and the convention needs to be well established.</em></p>\n\n<p>Example:  </p>\n\n<pre><code class=\"language-css\">// In this project, components are:\n.menu\n.menu-title\n\n// Classes that modify a component start with a `-`\n.-left-aligned\n.-in-sidebar\n\n// Helpers are started with `h-`\n.h-margin-bottom\n\n// Theming classes are started with `t-`\n.t-brand-color\n</code></pre>\n\n<p><strong><em>2.</strong> All CSS selectors that contain a CSS component class must start with it and they must not modify any other CSS component class or it’s children directly (by referencing it - so a selector can ever include only a single CSS component class) or indirectly (by element selectors for example).</em></p>\n\n<p>Example:  </p>\n\n<pre><code class=\"language-markup\">// Given this HTML, where components are `main-logo`, `.menu` and `.menu-item`:\n&lt;header&gt;  \n  &lt;img src=/images/logo.png class=“main-logo”&gt;\n  &lt;ul class=\"menu\"&gt;\n    &lt;li class=\"menu-item\"&gt;\n      &lt;img src=\"/images/avatar.jpg\"&gt;\n      &lt;a href=#profile&gt;Go to profile&lt;/a&gt;\n    &lt;/li&gt;\n    &lt;li class=\"menu-item -last\"&gt;\n      &lt;img src=\"/images/avatar.jpg\"&gt;\n      &lt;a href=#profile&gt;Go to profile&lt;/a&gt;\n    &lt;/li&gt;\n  &lt;/ul&gt;\n&lt;/header&gt;  \n</code></pre>\n\n<pre><code class=\"language-css\">// Ok selectors. Element selectors here would be defaults for given tags.\nimg  \na  \nheader  \n.main-logo\n.menu\n.menu-item a\n.menu-item img ~ a\n.menu-item.-last\n\n// Not ok\nheader a  \nheader .menu  \n.menu .menu-item\nimg ~ a  \n.menu-item img ~ a\n.menu li:nth-child(2) a\n</code></pre>\n\n<p><strong><em>3.</strong> An HTML tag can only have a single CSS component class.</em></p>\n\n<p>Example:  </p>\n\n<pre><code class=\"language-markup\">// Ok\n&lt;button class=\"action-button\"&gt;  \n&lt;section class=\"panel\"&gt;\n\n// Not ok\n&lt;div class=\"menu parallax-scroller click-hijacker-visible\"&gt;  \n&lt;a class=\"action-btn trigger-overlay\"&gt;  \n&lt;ul class=\"sub-menu facets\"&gt;  \n</code></pre>\n\n<p>As with any subset, in some cases this will make writing some of your CSS harder and more verbose. It’s probably an overkill for smallish projects, where what you need a stylesheet and not a component library. It’s probably not well suited to drawing iPhones with box-shadows either. </p>\n\n<p>Things can be done with preprocessors to simplify this approach. For example, on the aforementioned project, we used SCSS and all classes were output with mixins. This made for some crazy looking CSS, but in the end, all developers on the project found it much more easier to extend and reason about our CSS.</p>",
+            "image": null,
+            "featured": 0,
+            "page": 0,
+            "status": "published",
+            "language": "en_US",
+            "meta_title": null,
+            "meta_description": null,
+            "author_id": 1,
+            "created_at": 1425737916545,
+            "created_by": 1,
+            "updated_at": 1425983402558,
+            "updated_by": 1,
+            "published_at": 1425981739658,
+            "published_by": 1
+          },
+          {
+            "id": 9,
+            "uuid": "2e180862-8881-4d1b-8c4a-557831dd1d5a",
+            "title": "The most important part of your CSS",
+            "slug": "the-most-important-part-of-your-css",
+            "markdown": "There is a bit of CSS that you will write or more likely use from a library that will influence your whole project. It is crucial and it’s quality and adequacy can make or break your productivity as you develop. That CSS is famous (or infamous!) grid.\n\nLaying out things on the web has always been a struggle. You only have to dive into HTML email to see how terrible it was because table layouts are still a thing there. As graphic design practices trickled through to the web and tables were starting to get filled with data instead of layouts, some people discovered that we could abstract some of that CSS into grid systems. And rightfully so - controlling [width is one of the most used CSS properties](http://reports.quickleft.com/css). It was, all in all, a great success. Our grids maybe were not as advanced as in traditional graphic design, but they were a fantastic abstraction that saved us a lot of time. \n\nThen came along responsive design. It demanded a lot more from our humble grid. But as older, buggy browsers were pushed out and using things like box-sizing, inline-block and negative margins became common (and reliable), the grid adapted.\n\nIt’s quite trivial to write a grid these days; but it’s not trivial to know when to use inline-block or floats. It’s not trivial to polyfill our good ‘ol grid with [flexbox](https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Using_flexbox_to_lay_out_web_applications) either. Twitter’s Bootstrap grid might not be ideal for your project; you’ll know it when you are going to have to change it all the time. The breaking point will come when you will not use the grid because you will be afraid of the side effects that can cause and you will make little, impromptu, error-prone grids on the spot.\n\nAll this should tell you one thing: the grid needs special attention from the developer, from the outset. You can see this by the emergence of tools like [Gridset](https://gridsetapp.com/) and efforts on bringing the [cassowary constraint solver](https://gridstylesheets.org/) to the web. On most projects, laying out is a massive part of writing HTML & CSS. The better your tools and your understanding of them, the smaller your headaches later.\n\nSo what should you do when assessing a grid? Some key points should be:\n- how can you safely extend the grid? (ie. what do you do if you need different gutters somewhere down the line?)\n- what are the limitations of the grid (ie. how many columns can we have? Can the grid be used in any container? Is there some patterns that should be avoided)\n- does it use floats, inline-block (do we need to care about [extra white space](https://css-tricks.com/fighting-the-space-between-inline-block-elements/)), flexbox, something else?\n- how is responsiveness handled? how can it be extended?\n- will it work with other frameworks that we are using?\n- how does it fit into the naming scheme used for our CSS?\n- what browsers does it support?\n\nIf you create your own, setup a test page and run it through Browserstack or similar. Make sure your new rad idea works across the browsers you want consistently. The big benefit of doing this is that you don’t have to settle for the general case of the grid, you can make allowances that your project requires.\n\nRealising the above, I’ve created a library that lets you create grids on demand called [Taco Grids](http://dpiatek.github.io/taco/). Currently written for the [Stylus](https://learnboost.github.io/stylus/) CSS preprocessor, it’s an experiment in using a flexible tool for creating easily extensible grids. You can read a bit more about Taco in my [previous blog post](http://dominikpiatek.com/meet-taco-a-css-grid-systems-generator/) or jump to it's [home page](http://dpiatek.github.io/taco/) to look at the docs and example usage.\n\n",
+            "html": "<p>There is a bit of CSS that you will write or more likely use from a library that will influence your whole project. It is crucial and it’s quality and adequacy can make or break your productivity as you develop. That CSS is famous (or infamous!) grid.</p>\n\n<p>Laying out things on the web has always been a struggle. You only have to dive into HTML email to see how terrible it was because table layouts are still a thing there. As graphic design practices trickled through to the web and tables were starting to get filled with data instead of layouts, some people discovered that we could abstract some of that CSS into grid systems. And rightfully so - controlling <a href=\"http://reports.quickleft.com/css\">width is one of the most used CSS properties</a>. It was, all in all, a great success. Our grids maybe were not as advanced as in traditional graphic design, but they were a fantastic abstraction that saved us a lot of time. </p>\n\n<p>Then came along responsive design. It demanded a lot more from our humble grid. But as older, buggy browsers were pushed out and using things like box-sizing, inline-block and negative margins became common (and reliable), the grid adapted.</p>\n\n<p>It’s quite trivial to write a grid these days; but it’s not trivial to know when to use inline-block or floats. It’s not trivial to polyfill our good ‘ol grid with <a href=\"https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Using_flexbox_to_lay_out_web_applications\">flexbox</a> either. Twitter’s Bootstrap grid might not be ideal for your project; you’ll know it when you are going to have to change it all the time. The breaking point will come when you will not use the grid because you will be afraid of the side effects that can cause and you will make little, impromptu, error-prone grids on the spot.</p>\n\n<p>All this should tell you one thing: the grid needs special attention from the developer, from the outset. You can see this by the emergence of tools like <a href=\"https://gridsetapp.com/\">Gridset</a> and efforts on bringing the <a href=\"https://gridstylesheets.org/\">cassowary constraint solver</a> to the web. On most projects, laying out is a massive part of writing HTML &amp; CSS. The better your tools and your understanding of them, the smaller your headaches later.</p>\n\n<p>So what should you do when assessing a grid? Some key points should be: <br />\n- how can you safely extend the grid? (ie. what do you do if you need different gutters somewhere down the line?)\n- what are the limitations of the grid (ie. how many columns can we have? Can the grid be used in any container? Is there some patterns that should be avoided)\n- does it use floats, inline-block (do we need to care about <a href=\"https://css-tricks.com/fighting-the-space-between-inline-block-elements/\">extra white space</a>), flexbox, something else?\n- how is responsiveness handled? how can it be extended?\n- will it work with other frameworks that we are using?\n- how does it fit into the naming scheme used for our CSS?\n- what browsers does it support?</p>\n\n<p>If you create your own, setup a test page and run it through Browserstack or similar. Make sure your new rad idea works across the browsers you want consistently. The big benefit of doing this is that you don’t have to settle for the general case of the grid, you can make allowances that your project requires.</p>\n\n<p>Realising the above, I’ve created a library that lets you create grids on demand called <a href=\"http://dpiatek.github.io/taco/\">Taco Grids</a>. Currently written for the <a href=\"https://learnboost.github.io/stylus/\">Stylus</a> CSS preprocessor, it’s an experiment in using a flexible tool for creating easily extensible grids. You can read a bit more about Taco in my <a href=\"http://dominikpiatek.com/meet-taco-a-css-grid-systems-generator/\">previous blog post</a> or jump to it's <a href=\"http://dpiatek.github.io/taco/\">home page</a> to look at the docs and example usage.</p>",
+            "image": null,
+            "featured": 0,
+            "page": 0,
+            "status": "published",
+            "language": "en_US",
+            "meta_title": null,
+            "meta_description": null,
+            "author_id": 1,
+            "created_at": 1434629221052,
+            "created_by": 1,
+            "updated_at": 1434983378580,
+            "updated_by": 1,
+            "published_at": 1434629257397,
+            "published_by": 1
+          }
+        ],
+        "users": [
+          {
+            "id": 1,
+            "uuid": "dbfec979-c615-4dd0-b99d-e064b8935a47",
+            "name": "Dominik Piatek",
+            "slug": "dominik",
+            "password": "$2a$10$9p3NDVrwHTbwO7rZ1c9OZOARi.asJlADk.zwJpP.TGuws3NuY4xy.",
+            "email": "do.piatek@gmail.com",
+            "image": "//www.gravatar.com/avatar/b136cbe30c8d898c795e1d3039992f59?s=250&d=mm&r=x",
+            "cover": null,
+            "bio": null,
+            "website": null,
+            "location": null,
+            "accessibility": null,
+            "status": "active",
+            "language": "en_US",
+            "meta_title": null,
+            "meta_description": null,
+            "last_login": 1442933440762,
+            "created_at": 1434717872690,
+            "created_by": 1,
+            "updated_at": 1442933440762,
+            "updated_by": 1
+          }
+        ],
+        "roles": [
+          {
+            "id": 1,
+            "uuid": "df146d18-4506-49e8-ad52-b3ed18ec4207",
+            "name": "Administrator",
+            "description": "Administrators",
+            "created_at": 1434717871643,
+            "created_by": 1,
+            "updated_at": 1434717871643,
+            "updated_by": 1
+          },
+          {
+            "id": 2,
+            "uuid": "67cc7456-5367-45c1-be20-26d1eb5b018d",
+            "name": "Editor",
+            "description": "Editors",
+            "created_at": 1434717871644,
+            "created_by": 1,
+            "updated_at": 1434717871644,
+            "updated_by": 1
+          },
+          {
+            "id": 3,
+            "uuid": "e2e10763-8c39-48cf-a351-016e6bb0ef95",
+            "name": "Author",
+            "description": "Authors",
+            "created_at": 1434717871645,
+            "created_by": 1,
+            "updated_at": 1434717871645,
+            "updated_by": 1
+          },
+          {
+            "id": 4,
+            "uuid": "24822c4c-6368-4212-aaa5-d51a11306e90",
+            "name": "Owner",
+            "description": "Blog Owner",
+            "created_at": 1434717871645,
+            "created_by": 1,
+            "updated_at": 1434717871645,
+            "updated_by": 1
+          }
+        ],
+        "roles_users": [
+          {
+            "id": 1,
+            "role_id": 4,
+            "user_id": 1
+          }
+        ],
+        "permissions": [
+          {
+            "id": 1,
+            "uuid": "f327ea6f-b1c5-4459-b168-a03da98dc6ae",
+            "name": "Export database",
+            "object_type": "db",
+            "action_type": "exportContent",
+            "object_id": null,
+            "created_at": 1434717871732,
+            "created_by": 1,
+            "updated_at": 1434717871732,
+            "updated_by": 1
+          },
+          {
+            "id": 2,
+            "uuid": "550960a2-e097-41a7-b23c-1e00886428a4",
+            "name": "Import database",
+            "object_type": "db",
+            "action_type": "importContent",
+            "object_id": null,
+            "created_at": 1434717871741,
+            "created_by": 1,
+            "updated_at": 1434717871741,
+            "updated_by": 1
+          },
+          {
+            "id": 3,
+            "uuid": "30ca07dd-4cc2-4730-ab76-8e51c85b33ab",
+            "name": "Delete all content",
+            "object_type": "db",
+            "action_type": "deleteAllContent",
+            "object_id": null,
+            "created_at": 1434717871750,
+            "created_by": 1,
+            "updated_at": 1434717871750,
+            "updated_by": 1
+          },
+          {
+            "id": 4,
+            "uuid": "5130ff2e-19b9-415e-91c2-73b0093cab6c",
+            "name": "Send mail",
+            "object_type": "mail",
+            "action_type": "send",
+            "object_id": null,
+            "created_at": 1434717871756,
+            "created_by": 1,
+            "updated_at": 1434717871756,
+            "updated_by": 1
+          },
+          {
+            "id": 5,
+            "uuid": "6215ee1f-0f07-4baa-854d-7952d74b29fa",
+            "name": "Browse notifications",
+            "object_type": "notification",
+            "action_type": "browse",
+            "object_id": null,
+            "created_at": 1434717871763,
+            "created_by": 1,
+            "updated_at": 1434717871763,
+            "updated_by": 1
+          },
+          {
+            "id": 6,
+            "uuid": "041b4e26-6c7f-4023-a336-a650d6c4ef7a",
+            "name": "Add notifications",
+            "object_type": "notification",
+            "action_type": "add",
+            "object_id": null,
+            "created_at": 1434717871771,
+            "created_by": 1,
+            "updated_at": 1434717871771,
+            "updated_by": 1
+          },
+          {
+            "id": 7,
+            "uuid": "b29e33a2-0b26-4cf5-aebf-49f12e92301e",
+            "name": "Delete notifications",
+            "object_type": "notification",
+            "action_type": "destroy",
+            "object_id": null,
+            "created_at": 1434717871777,
+            "created_by": 1,
+            "updated_at": 1434717871777,
+            "updated_by": 1
+          },
+          {
+            "id": 8,
+            "uuid": "eef8c9df-f9e7-4a0e-b29d-88b19db661aa",
+            "name": "Browse posts",
+            "object_type": "post",
+            "action_type": "browse",
+            "object_id": null,
+            "created_at": 1434717871786,
+            "created_by": 1,
+            "updated_at": 1434717871786,
+            "updated_by": 1
+          },
+          {
+            "id": 9,
+            "uuid": "360fe2df-f57b-40f8-9170-5d7dff307e68",
+            "name": "Read posts",
+            "object_type": "post",
+            "action_type": "read",
+            "object_id": null,
+            "created_at": 1434717871793,
+            "created_by": 1,
+            "updated_at": 1434717871793,
+            "updated_by": 1
+          },
+          {
+            "id": 10,
+            "uuid": "03500349-f900-4ebb-8323-291d56933394",
+            "name": "Edit posts",
+            "object_type": "post",
+            "action_type": "edit",
+            "object_id": null,
+            "created_at": 1434717871802,
+            "created_by": 1,
+            "updated_at": 1434717871802,
+            "updated_by": 1
+          },
+          {
+            "id": 11,
+            "uuid": "4486dc33-1bc9-45eb-b693-c20cfd4291d9",
+            "name": "Add posts",
+            "object_type": "post",
+            "action_type": "add",
+            "object_id": null,
+            "created_at": 1434717871808,
+            "created_by": 1,
+            "updated_at": 1434717871808,
+            "updated_by": 1
+          },
+          {
+            "id": 12,
+            "uuid": "18dd5d14-a254-4530-9be6-782dab3370c5",
+            "name": "Delete posts",
+            "object_type": "post",
+            "action_type": "destroy",
+            "object_id": null,
+            "created_at": 1434717871817,
+            "created_by": 1,
+            "updated_at": 1434717871817,
+            "updated_by": 1
+          },
+          {
+            "id": 13,
+            "uuid": "0e372644-fdf5-4824-889c-a5b5bc1dbf0e",
+            "name": "Browse settings",
+            "object_type": "setting",
+            "action_type": "browse",
+            "object_id": null,
+            "created_at": 1434717871824,
+            "created_by": 1,
+            "updated_at": 1434717871824,
+            "updated_by": 1
+          },
+          {
+            "id": 14,
+            "uuid": "3a6e0ada-df12-4d72-8b87-80e7a8920550",
+            "name": "Read settings",
+            "object_type": "setting",
+            "action_type": "read",
+            "object_id": null,
+            "created_at": 1434717871834,
+            "created_by": 1,
+            "updated_at": 1434717871834,
+            "updated_by": 1
+          },
+          {
+            "id": 15,
+            "uuid": "430fc8a9-35c5-468c-a8a7-418ed8c61683",
+            "name": "Edit settings",
+            "object_type": "setting",
+            "action_type": "edit",
+            "object_id": null,
+            "created_at": 1434717871840,
+            "created_by": 1,
+            "updated_at": 1434717871840,
+            "updated_by": 1
+          },
+          {
+            "id": 16,
+            "uuid": "11c97737-d50b-4d17-aef7-3d7259297636",
+            "name": "Generate slugs",
+            "object_type": "slug",
+            "action_type": "generate",
+            "object_id": null,
+            "created_at": 1434717871847,
+            "created_by": 1,
+            "updated_at": 1434717871847,
+            "updated_by": 1
+          },
+          {
+            "id": 17,
+            "uuid": "1e6da9ff-d5c0-4613-9f6d-7c38647adb9a",
+            "name": "Browse tags",
+            "object_type": "tag",
+            "action_type": "browse",
+            "object_id": null,
+            "created_at": 1434717871856,
+            "created_by": 1,
+            "updated_at": 1434717871856,
+            "updated_by": 1
+          },
+          {
+            "id": 18,
+            "uuid": "780c930b-28be-4a1d-8aa9-bc77f8f8d1a9",
+            "name": "Read tags",
+            "object_type": "tag",
+            "action_type": "read",
+            "object_id": null,
+            "created_at": 1434717871863,
+            "created_by": 1,
+            "updated_at": 1434717871863,
+            "updated_by": 1
+          },
+          {
+            "id": 19,
+            "uuid": "75a15b97-6f15-42b7-a7cd-57e256fbe080",
+            "name": "Edit tags",
+            "object_type": "tag",
+            "action_type": "edit",
+            "object_id": null,
+            "created_at": 1434717871872,
+            "created_by": 1,
+            "updated_at": 1434717871872,
+            "updated_by": 1
+          },
+          {
+            "id": 20,
+            "uuid": "ef21eb48-b404-4335-9365-8f8d72a7d704",
+            "name": "Add tags",
+            "object_type": "tag",
+            "action_type": "add",
+            "object_id": null,
+            "created_at": 1434717871880,
+            "created_by": 1,
+            "updated_at": 1434717871880,
+            "updated_by": 1
+          },
+          {
+            "id": 21,
+            "uuid": "c606ef9d-76bd-4a7e-aca1-90232c60c28c",
+            "name": "Delete tags",
+            "object_type": "tag",
+            "action_type": "destroy",
+            "object_id": null,
+            "created_at": 1434717871887,
+            "created_by": 1,
+            "updated_at": 1434717871887,
+            "updated_by": 1
+          },
+          {
+            "id": 22,
+            "uuid": "01e9e577-8f73-4b5b-882c-738a379f77d6",
+            "name": "Browse themes",
+            "object_type": "theme",
+            "action_type": "browse",
+            "object_id": null,
+            "created_at": 1434717871894,
+            "created_by": 1,
+            "updated_at": 1434717871894,
+            "updated_by": 1
+          },
+          {
+            "id": 23,
+            "uuid": "2083c92d-0b46-4d6b-862c-d0e86db8174b",
+            "name": "Edit themes",
+            "object_type": "theme",
+            "action_type": "edit",
+            "object_id": null,
+            "created_at": 1434717871900,
+            "created_by": 1,
+            "updated_at": 1434717871900,
+            "updated_by": 1
+          },
+          {
+            "id": 24,
+            "uuid": "c971c8c3-459b-49d8-97a3-67305118d271",
+            "name": "Browse users",
+            "object_type": "user",
+            "action_type": "browse",
+            "object_id": null,
+            "created_at": 1434717871907,
+            "created_by": 1,
+            "updated_at": 1434717871907,
+            "updated_by": 1
+          },
+          {
+            "id": 25,
+            "uuid": "660129af-dcec-4c98-baaf-e0d967c426d1",
+            "name": "Read users",
+            "object_type": "user",
+            "action_type": "read",
+            "object_id": null,
+            "created_at": 1434717871916,
+            "created_by": 1,
+            "updated_at": 1434717871916,
+            "updated_by": 1
+          },
+          {
+            "id": 26,
+            "uuid": "e3587522-cb6f-4d86-a7bc-98654fb5ff8b",
+            "name": "Edit users",
+            "object_type": "user",
+            "action_type": "edit",
+            "object_id": null,
+            "created_at": 1434717871922,
+            "created_by": 1,
+            "updated_at": 1434717871922,
+            "updated_by": 1
+          },
+          {
+            "id": 27,
+            "uuid": "796f81ae-02d3-4f33-9ac6-cf60e35f01d4",
+            "name": "Add users",
+            "object_type": "user",
+            "action_type": "add",
+            "object_id": null,
+            "created_at": 1434717871929,
+            "created_by": 1,
+            "updated_at": 1434717871929,
+            "updated_by": 1
+          },
+          {
+            "id": 28,
+            "uuid": "d4c7289d-0bec-4389-ad84-7ab641b6ef6a",
+            "name": "Delete users",
+            "object_type": "user",
+            "action_type": "destroy",
+            "object_id": null,
+            "created_at": 1434717871936,
+            "created_by": 1,
+            "updated_at": 1434717871936,
+            "updated_by": 1
+          },
+          {
+            "id": 29,
+            "uuid": "bfffd61f-0c98-4d52-bca4-ceecec38580f",
+            "name": "Assign a role",
+            "object_type": "role",
+            "action_type": "assign",
+            "object_id": null,
+            "created_at": 1434717871945,
+            "created_by": 1,
+            "updated_at": 1434717871945,
+            "updated_by": 1
+          },
+          {
+            "id": 30,
+            "uuid": "f799034b-a0be-4ae1-85fe-5407efa92cb1",
+            "name": "Browse roles",
+            "object_type": "role",
+            "action_type": "browse",
+            "object_id": null,
+            "created_at": 1434717871954,
+            "created_by": 1,
+            "updated_at": 1434717871954,
+            "updated_by": 1
+          }
+        ],
+        "permissions_users": [],
+        "permissions_roles": [
+          {
+            "id": 1,
+            "role_id": 1,
+            "permission_id": 1
+          },
+          {
+            "id": 2,
+            "role_id": 1,
+            "permission_id": 2
+          },
+          {
+            "id": 3,
+            "role_id": 1,
+            "permission_id": 3
+          },
+          {
+            "id": 4,
+            "role_id": 1,
+            "permission_id": 4
+          },
+          {
+            "id": 5,
+            "role_id": 1,
+            "permission_id": 5
+          },
+          {
+            "id": 6,
+            "role_id": 1,
+            "permission_id": 6
+          },
+          {
+            "id": 7,
+            "role_id": 1,
+            "permission_id": 7
+          },
+          {
+            "id": 8,
+            "role_id": 1,
+            "permission_id": 8
+          },
+          {
+            "id": 9,
+            "role_id": 1,
+            "permission_id": 9
+          },
+          {
+            "id": 10,
+            "role_id": 1,
+            "permission_id": 10
+          },
+          {
+            "id": 11,
+            "role_id": 1,
+            "permission_id": 11
+          },
+          {
+            "id": 12,
+            "role_id": 1,
+            "permission_id": 12
+          },
+          {
+            "id": 13,
+            "role_id": 1,
+            "permission_id": 13
+          },
+          {
+            "id": 14,
+            "role_id": 1,
+            "permission_id": 14
+          },
+          {
+            "id": 15,
+            "role_id": 1,
+            "permission_id": 15
+          },
+          {
+            "id": 16,
+            "role_id": 1,
+            "permission_id": 16
+          },
+          {
+            "id": 17,
+            "role_id": 1,
+            "permission_id": 17
+          },
+          {
+            "id": 18,
+            "role_id": 1,
+            "permission_id": 18
+          },
+          {
+            "id": 19,
+            "role_id": 1,
+            "permission_id": 19
+          },
+          {
+            "id": 20,
+            "role_id": 1,
+            "permission_id": 20
+          },
+          {
+            "id": 21,
+            "role_id": 1,
+            "permission_id": 21
+          },
+          {
+            "id": 22,
+            "role_id": 1,
+            "permission_id": 22
+          },
+          {
+            "id": 23,
+            "role_id": 1,
+            "permission_id": 23
+          },
+          {
+            "id": 24,
+            "role_id": 1,
+            "permission_id": 24
+          },
+          {
+            "id": 25,
+            "role_id": 1,
+            "permission_id": 25
+          },
+          {
+            "id": 26,
+            "role_id": 1,
+            "permission_id": 26
+          },
+          {
+            "id": 27,
+            "role_id": 1,
+            "permission_id": 27
+          },
+          {
+            "id": 28,
+            "role_id": 1,
+            "permission_id": 28
+          },
+          {
+            "id": 29,
+            "role_id": 1,
+            "permission_id": 29
+          },
+          {
+            "id": 30,
+            "role_id": 1,
+            "permission_id": 30
+          },
+          {
+            "id": 31,
+            "role_id": 2,
+            "permission_id": 8
+          },
+          {
+            "id": 32,
+            "role_id": 2,
+            "permission_id": 9
+          },
+          {
+            "id": 33,
+            "role_id": 2,
+            "permission_id": 10
+          },
+          {
+            "id": 34,
+            "role_id": 2,
+            "permission_id": 11
+          },
+          {
+            "id": 35,
+            "role_id": 2,
+            "permission_id": 12
+          },
+          {
+            "id": 36,
+            "role_id": 2,
+            "permission_id": 13
+          },
+          {
+            "id": 37,
+            "role_id": 2,
+            "permission_id": 14
+          },
+          {
+            "id": 38,
+            "role_id": 2,
+            "permission_id": 16
+          },
+          {
+            "id": 39,
+            "role_id": 2,
+            "permission_id": 17
+          },
+          {
+            "id": 40,
+            "role_id": 2,
+            "permission_id": 18
+          },
+          {
+            "id": 41,
+            "role_id": 2,
+            "permission_id": 19
+          },
+          {
+            "id": 42,
+            "role_id": 2,
+            "permission_id": 20
+          },
+          {
+            "id": 43,
+            "role_id": 2,
+            "permission_id": 21
+          },
+          {
+            "id": 44,
+            "role_id": 2,
+            "permission_id": 24
+          },
+          {
+            "id": 45,
+            "role_id": 2,
+            "permission_id": 25
+          },
+          {
+            "id": 46,
+            "role_id": 2,
+            "permission_id": 26
+          },
+          {
+            "id": 47,
+            "role_id": 2,
+            "permission_id": 27
+          },
+          {
+            "id": 48,
+            "role_id": 2,
+            "permission_id": 28
+          },
+          {
+            "id": 49,
+            "role_id": 2,
+            "permission_id": 29
+          },
+          {
+            "id": 50,
+            "role_id": 2,
+            "permission_id": 30
+          },
+          {
+            "id": 51,
+            "role_id": 3,
+            "permission_id": 8
+          },
+          {
+            "id": 52,
+            "role_id": 3,
+            "permission_id": 9
+          },
+          {
+            "id": 53,
+            "role_id": 3,
+            "permission_id": 11
+          },
+          {
+            "id": 54,
+            "role_id": 3,
+            "permission_id": 13
+          },
+          {
+            "id": 55,
+            "role_id": 3,
+            "permission_id": 14
+          },
+          {
+            "id": 56,
+            "role_id": 3,
+            "permission_id": 16
+          },
+          {
+            "id": 57,
+            "role_id": 3,
+            "permission_id": 17
+          },
+          {
+            "id": 58,
+            "role_id": 3,
+            "permission_id": 18
+          },
+          {
+            "id": 59,
+            "role_id": 3,
+            "permission_id": 20
+          },
+          {
+            "id": 60,
+            "role_id": 3,
+            "permission_id": 24
+          },
+          {
+            "id": 61,
+            "role_id": 3,
+            "permission_id": 25
+          },
+          {
+            "id": 62,
+            "role_id": 3,
+            "permission_id": 30
+          }
+        ],
+        "permissions_apps": [],
+        "settings": [
+          {
+            "id": 1,
+            "uuid": "95afda93-5783-4892-8669-00630c32bf95",
+            "key": "databaseVersion",
+            "value": "003",
+            "type": "core",
+            "created_at": 1434717872711,
+            "created_by": 1,
+            "updated_at": 1434717872711,
+            "updated_by": 1
+          },
+          {
+            "id": 2,
+            "uuid": "a74a2758-d50e-4f80-9f6b-daf7898a1b11",
+            "key": "dbHash",
+            "value": "ff6c03c0-441d-457e-bae2-951cc1dc3098",
+            "type": "core",
+            "created_at": 1434717872723,
+            "created_by": 1,
+            "updated_at": 1434717872898,
+            "updated_by": 1
+          },
+          {
+            "id": 3,
+            "uuid": "c21e94ae-d2af-40a5-96f2-d4239a1e2f9f",
+            "key": "nextUpdateCheck",
+            "value": "1443019653",
+            "type": "core",
+            "created_at": 1434717872723,
+            "created_by": 1,
+            "updated_at": 1442933388847,
+            "updated_by": 1
+          },
+          {
+            "id": 4,
+            "uuid": "b3c9948a-c81f-4ee1-b596-37744516cf36",
+            "key": "displayUpdateNotification",
+            "value": "0.5.0",
+            "type": "core",
+            "created_at": 1434717872723,
+            "created_by": 1,
+            "updated_at": 1442933388849,
+            "updated_by": 1
+          },
+          {
+            "id": 5,
+            "uuid": "1cff0454-26d3-4367-af5e-e68163080a9f",
+            "key": "title",
+            "value": "Dominik Piatek",
+            "type": "blog",
+            "created_at": 1434717872724,
+            "created_by": 1,
+            "updated_at": 1434718933012,
+            "updated_by": 1
+          },
+          {
+            "id": 6,
+            "uuid": "a2b157a1-47a4-4696-b811-6a28bd106a3f",
+            "key": "description",
+            "value": "Browserland",
+            "type": "blog",
+            "created_at": 1434717872724,
+            "created_by": 1,
+            "updated_at": 1434718933014,
+            "updated_by": 1
+          },
+          {
+            "id": 7,
+            "uuid": "8aa384fb-5ae9-4c4c-90ce-e4163208fd6e",
+            "key": "email",
+            "value": "do.piatek@gmail.com",
+            "type": "blog",
+            "created_at": 1434717872724,
+            "created_by": 1,
+            "updated_at": 1434718933014,
+            "updated_by": 1
+          },
+          {
+            "id": 8,
+            "uuid": "a50c95f3-9b30-4e39-a96e-76404b55bb79",
+            "key": "logo",
+            "value": "",
+            "type": "blog",
+            "created_at": 1434717872724,
+            "created_by": 1,
+            "updated_at": 1434718933015,
+            "updated_by": 1
+          },
+          {
+            "id": 9,
+            "uuid": "39868a0a-b295-4afb-93b5-a0ba173cd0ca",
+            "key": "cover",
+            "value": "",
+            "type": "blog",
+            "created_at": 1434717872724,
+            "created_by": 1,
+            "updated_at": 1434718933016,
+            "updated_by": 1
+          },
+          {
+            "id": 10,
+            "uuid": "cc73c991-91e0-4325-a510-e4dc80d84f2d",
+            "key": "defaultLang",
+            "value": "en_US",
+            "type": "blog",
+            "created_at": 1434717872725,
+            "created_by": 1,
+            "updated_at": 1434718933017,
+            "updated_by": 1
+          },
+          {
+            "id": 11,
+            "uuid": "56423b8d-678f-4b25-abe6-1b64d3146a59",
+            "key": "postsPerPage",
+            "value": "10",
+            "type": "blog",
+            "created_at": 1434717872725,
+            "created_by": 1,
+            "updated_at": 1434718933018,
+            "updated_by": 1
+          },
+          {
+            "id": 12,
+            "uuid": "75b4a270-d643-461b-9298-bf7c0cf60488",
+            "key": "forceI18n",
+            "value": "true",
+            "type": "blog",
+            "created_at": 1434717872725,
+            "created_by": 1,
+            "updated_at": 1434718933018,
+            "updated_by": 1
+          },
+          {
+            "id": 13,
+            "uuid": "e25c65cb-493b-4f80-9615-f626d165a4f1",
+            "key": "permalinks",
+            "value": "/:slug/",
+            "type": "blog",
+            "created_at": 1434717872725,
+            "created_by": 1,
+            "updated_at": 1434718933019,
+            "updated_by": 1
+          },
+          {
+            "id": 14,
+            "uuid": "118bd967-4eef-410e-b055-4336d46d533a",
+            "key": "ghost_head",
+            "value": "",
+            "type": "blog",
+            "created_at": 1434717872725,
+            "created_by": 1,
+            "updated_at": 1434718933021,
+            "updated_by": 1
+          },
+          {
+            "id": 15,
+            "uuid": "0c586e3f-c6f6-471e-86a4-3075509ca602",
+            "key": "ghost_foot",
+            "value": "",
+            "type": "blog",
+            "created_at": 1434717872725,
+            "created_by": 1,
+            "updated_at": 1434718933022,
+            "updated_by": 1
+          },
+          {
+            "id": 16,
+            "uuid": "a9550af6-4902-491c-b778-0068680684fa",
+            "key": "labs",
+            "value": "{}",
+            "type": "blog",
+            "created_at": 1434717872725,
+            "created_by": 1,
+            "updated_at": 1434718933022,
+            "updated_by": 1
+          },
+          {
+            "id": 17,
+            "uuid": "8200ba20-23a1-408f-b3b3-db3e76b56daa",
+            "key": "navigation",
+            "value": "[{\"label\":\"Home\", \"url\":\"/\"}]",
+            "type": "blog",
+            "created_at": 1434717872726,
+            "created_by": 1,
+            "updated_at": 1434718933023,
+            "updated_by": 1
+          },
+          {
+            "id": 18,
+            "uuid": "02d7fd4d-491a-4abf-a0ad-3c7728996aa3",
+            "key": "isPrivate",
+            "value": "false",
+            "type": "blog",
+            "created_at": 1434717872726,
+            "created_by": 1,
+            "updated_at": 1434718933024,
+            "updated_by": 1
+          },
+          {
+            "id": 19,
+            "uuid": "11330bab-4434-407e-8c30-89ca760dc85b",
+            "key": "password",
+            "value": "",
+            "type": "blog",
+            "created_at": 1434717872726,
+            "created_by": 1,
+            "updated_at": 1434718933025,
+            "updated_by": 1
+          },
+          {
+            "id": 20,
+            "uuid": "01941189-c120-4b1e-8076-27528973a984",
+            "key": "activeApps",
+            "value": "[]",
+            "type": "app",
+            "created_at": 1434717872726,
+            "created_by": 1,
+            "updated_at": 1434718687712,
+            "updated_by": 1
+          },
+          {
+            "id": 21,
+            "uuid": "1312a7f5-2c63-445f-beb7-12ad79e46344",
+            "key": "installedApps",
+            "value": "[]",
+            "type": "app",
+            "created_at": 1434717872727,
+            "created_by": 1,
+            "updated_at": 1438676749336,
+            "updated_by": 1
+          },
+          {
+            "id": 22,
+            "uuid": "21890ef6-7002-4cb2-9685-e5bbb4e347a2",
+            "key": "activeTheme",
+            "value": "casper",
+            "type": "theme",
+            "created_at": 1434717872726,
+            "created_by": 1,
+            "updated_at": 1434718933020,
+            "updated_by": 1
+          }
+        ],
+        "tags": [
+          {
+            "id": 1,
+            "uuid": "d35b7d4d-7d17-4e18-866e-a9a8104c60ad",
+            "name": "Getting Started",
+            "slug": "getting-started",
+            "description": null,
+            "image": null,
+            "hidden": 0,
+            "parent_id": null,
+            "meta_title": null,
+            "meta_description": null,
+            "created_at": 1434717871643,
+            "created_by": 1,
+            "updated_at": 1434717871643,
+            "updated_by": 1
+          },
+          {
+            "id": 2,
+            "uuid": "06d6e0cc-69cc-4836-b356-545c50dfaeb2",
+            "name": "javascript",
+            "slug": "javascript",
+            "description": null,
+            "image": null,
+            "hidden": 0,
+            "parent_id": null,
+            "meta_title": null,
+            "meta_description": null,
+            "created_at": 1434718687554,
+            "created_by": 1,
+            "updated_at": 1434718687554,
+            "updated_by": 1
+          },
+          {
+            "id": 3,
+            "uuid": "6ed41c2f-56d5-45c7-9516-24788fa79ab9",
+            "name": "why-so-serious",
+            "slug": "why-so-serious",
+            "description": null,
+            "image": null,
+            "hidden": 0,
+            "parent_id": null,
+            "meta_title": null,
+            "meta_description": null,
+            "created_at": 1434718687555,
+            "created_by": 1,
+            "updated_at": 1434718687555,
+            "updated_by": 1
+          }
+        ],
+        "posts_tags": [],
+        "apps": [],
+        "app_settings": [],
+        "app_fields": []
+      }
+    }
+  ]
+}
