@@ -13,6 +13,7 @@ import Footer from '../components/Footer.astro';
 			<ul class="links">
 				<li><a href="https://github.com/dpiatek">Github</a></li>
 				<li><a href="https://www.linkedin.com/in/dominik-piatek/">LinkedIn</a></li>
+				<li><a href="/blog">Blog</a></li>
 			</ul>
 		</section>
 
@@ -22,16 +23,18 @@ import Footer from '../components/Footer.astro';
 
 <style>
 	.main {
+		font-family: 'Bebas Neue', sans-serif;
+		font-size: 2rem;
 		padding: 24px;
 	}
 
-	.home {
-		font-size: 2rem;
+	.home p {
+		margin-bottom: 0;
 	}
 
 	.hello {
 		font-size: 4rem;
-		font-size: clamp(4rem, 40cqi, 20rem);
+		font-size: clamp(4rem, 40cqi, 24rem);
 		line-height: 1;
 		margin: 0;
 		background: var(--gradient-right);

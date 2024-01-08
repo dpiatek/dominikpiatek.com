@@ -1,11 +1,56 @@
 ---
+import Layout from '../../layouts/Layout.astro';
+import Footer from '../../components/Footer.astro';
+import BackLink from '../../components/BackLink.astro';
+
 import { posts } from '../../lib/ghost';
+
+// const allMdPosts = await Astro.glob('./*.md');
+const allMdPosts = [] as any[];
+const allPosts = [...allMdPosts.map(post => post.frontmatter), ...posts].map(post => {
+  const parsedDate = new Date(post.published_at);
+  const day = parsedDate.getDate();
+  const month = parsedDate.getMonth() + 1;
+
+  return {
+    ...post,
+    formattedPublishedAt: `${day < 10 ? "0" + day : day}/${month < 10 ? "0" + month : month}/${parsedDate.getFullYear()}`,
+  }
+}).sort((a, b) => b.published_at - a.published_at);
 ---
 
-<ul>
-  {posts.map(post => 
-    <li>
-      <a href={`blog/${post.slug}`}>{post.title}</a>
-    </li>
-  )}
-</ul>
+<Layout title="Dominik Piątek">
+  <main class="main">
+    <BackLink text="home" href="/" />
+
+    <div class="blog-post-list">
+      {allPosts.map(post => 
+        <>
+          <p class="published-at-date">{post.formattedPublishedAt}</p>
+          <a href={`blog/${post.slug}`}>{post.title}</a>
+        </>
+      )}
+    </div>
+    <Footer />
+  </main>
+</Layout>
+
+<style>
+	.main {
+		padding: 24px;
+	}
+
+  .blog-post-list {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    margin-bottom: 4rem;
+    grid-gap: 0.5rem;
+  }
+
+  .published-at-date {
+    display: inline-block;
+    color: var(--columbia-blue);
+    font-style: italic;
+    margin: 0;
+  }
+</style>

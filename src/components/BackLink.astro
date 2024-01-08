@@ -1,0 +1,15 @@
+---
+const { text, href } = Astro.props;
+---
+
+<a href={href} class="back-link">← Back to {text}</a>
+
+<style>
+  .back-link {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    text-decoration: none;
+    margin-bottom: 2rem;
+    display: block;
+  }
+</style>

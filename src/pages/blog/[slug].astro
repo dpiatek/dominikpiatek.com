@@ -1,4 +1,8 @@
 ---
+import Layout from '../../layouts/GhostBlogLayout.astro';
+import Footer from '../../components/Footer.astro';
+import BackLink from '../../components/BackLink.astro';
+
 import { posts } from '../../lib/ghost';
 
 export async function getStaticPaths() {
@@ -12,9 +16,60 @@ export async function getStaticPaths() {
   });
 }
 
-const { title, html } = Astro.props;
+const { title, html, published_at } = Astro.props;
+
+const parsedDate = new Date(published_at);
+const day = parsedDate.getDate();
+const month = parsedDate.getMonth() + 1;
+
+const formattedPublishedAt = `${day < 10 ? "0" + day : day}/${month < 10 ? "0" + month : month}/${parsedDate.getFullYear()}`; 
 ---
 
-<h1>{title}</h1>
+<Layout title="Dominik Piątek | Frontend Engineer">
+  <main class="main">
+    <BackLink text="blog index" href="/blog" />
 
-<Fragment set:html={html} />
+    <article>
+      <h1>{title}</h1>
+      <p class="published-at-date">Published {formattedPublishedAt}</p>
+      <Fragment set:html={html} />
+    </article>
+
+    <Footer />
+  </main>
+</Layout>
+
+<style>
+	.main {
+		padding: 24px;
+	}
+
+  .main article {
+    margin-bottom: 4rem;
+    max-width: 46rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  :global(code[class*=language-], pre[class*=language-]) {
+    font-size: 0.9em;
+  }
+
+  :global(pre[class*=language-]) {
+    margin: 1rem 0;
+  }
+
+  .main article h1 {
+    margin: 0;
+    font-family: 'Bebas Neue', sans-serif;
+		font-size: 4rem;
+    line-height: 1;
+  }
+
+  .published-at-date {
+    display: inline-block;
+    color: var(--columbia-blue);
+    margin-bottom: 2rem;
+    font-style: italic;
+  }
+</style>
