@@ -27,7 +27,7 @@ const allPosts = [...allMdPosts.map(post => post.frontmatter), ...posts].map(pos
       {allPosts.map(post => 
         <>
           <p class="published-at-date">{post.formattedPublishedAt}</p>
-          <a href={`blog/${post.slug}`}>{post.title}</a>
+          <a href={`/blog/${post.slug}`}>{post.title}</a>
         </>
       )}
     </div>
